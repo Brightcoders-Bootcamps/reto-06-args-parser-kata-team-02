@@ -10,25 +10,40 @@ class ArgsParser
   end
 
   def start
-    @arguments.each_with_index do |arg, idx|
+    @arguments.each_with_index do |arg, index|
       next unless arg.start_with?('-')
-
-      print 'Argumento no valido' unless VALID[arg]
-      retrieve_value(VALID[arg].first, idx + 1)
+      unless @schema.valid_schema[arg]
+        print "Bandera #{arg} no valida"
+        return
+      end
+      verify_arg(arg, index + 1)
     end
   end
 
-  def retrieve_value(arg_value, idx)
-    current_argument = @arguments[idx]
-    return unless current_argument
-
-    @schema.check_type(arg_value, current_argument)
-
-    puts flag?(idx) ? "#{arg_value} : true" : "#{arg_value} : #{current_argument}"
+  def verify_arg(arg, next_index)
+    next_arg = @arguments[next_index]
+    return unless next_arg
+    type = get_type(next_arg)
+    expected = @schema.valid_schema[arg]
+    if valid_arg?(arg, type) 
+      print "#{expected.first}: ", flag?(next_arg) ? 'true' : next_arg.to_s, "\n"
+    else
+      puts "Error Type: flag #{arg} should be type #{expected.last}, #{type} given."
+    end
   end
 
-  def flag?(idx)
-    @arguments[idx].start_with?('-')
+  def get_type(next_arg)
+    return TrueClass if flag?(next_arg)
+    return Integer if next_arg.to_i != 0
+    String
+  end
+
+  def valid_arg?(arg, type)
+    true if @schema.valid_schema[arg].last == type
+  end
+
+  def flag?(arg)
+    arg.start_with?('-')
   end
 end
 
