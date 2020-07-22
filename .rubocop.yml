@@ -1,2 +1,4 @@
-Layout/EndOfLine:
-  Enabled: false
+AllCops:
+  TargetRubyVersion: '2.6.6'
+Metrics/LineLength:
+  Max: 100

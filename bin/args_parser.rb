@@ -1,25 +1,28 @@
 # frozen_string_literal: true
 
-VALID = { 'port' => '-p', 'logging' => '-l', 'directory' => '-d' }.freeze
+require_relative 'schema'
 
 # This class verify that the arguments match the schema
 class ArgsParser
   def initialize(statement)
     @arguments = statement
+    @schema = Schema.new
   end
 
   def start
     @arguments.each_with_index do |arg, idx|
       next unless arg.start_with?('-')
 
-      print 'Argumento no valido' unless VALID.value?(arg)
-      retrieve_value(VALID.key(arg), idx + 1)
+      print 'Argumento no valido' unless VALID[arg]
+      retrieve_value(VALID[arg].first, idx + 1)
     end
   end
 
   def retrieve_value(arg_value, idx)
     current_argument = @arguments[idx]
     return unless current_argument
+
+    @schema.check_type(arg_value, current_argument)
 
     puts flag?(idx) ? "#{arg_value} : true" : "#{arg_value} : #{current_argument}"
   end
