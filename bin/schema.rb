@@ -11,27 +11,30 @@ class Schema
                       '-s' => ['server', String],
                       '-m' => ['make_directory', String],
                       '-a' => ['make_array', String] }
+    @final = []
+    @prev_flag = false
   end
 
   def unpack_values(values)
-    prev_flag = false
-    final = []
     values.each do |val|
-      break if !flag?(val) && !prev_flag
+      is_flag = val.start_with?('-')
+      break if !is_flag && !@prev_flag
 
-      if flag?(val) && @valid_schema[val]
-        final.push(@valid_schema[val].unshift(val))
-        prev_flag = true
-      elsif prev_flag
-        val = val.to_i if final.last.last == Integer
-        final.last.append(val)
-        prev_flag = false
-      end
+      curret_valid_value = @valid_schema[val]
+      store_finale(is_flag, val, curret_valid_value)
     end
-    final
+    @final
   end
 
-  def flag?(arg)
-    arg.start_with?('-')
+  def store_finale(is_flag, val, curret_valid_value)
+    class_value = @final.last
+    if is_flag && curret_valid_value
+      @final.push(curret_valid_value.unshift(val))
+      @prev_flag = true
+    elsif @prev_flag
+      val = val.to_i if class_value.last == Integer
+      class_value.append(val)
+      @prev_flag = false
+    end
   end
 end

@@ -2,7 +2,7 @@
 
 require_relative 'schema'
 
-# This class verify that the arguments match the schema
+# This class parse arguments to match the schema and print results
 class ArgsParser
   def initialize
     @schema = Schema.new
@@ -14,21 +14,14 @@ class ArgsParser
       puts 'Invalid argument'
       return
     end
-    elements.each { |arg| display_result(arg[1], arg[2], arg[3]) }
+    elements.each { |arg| VerifyArgs.verify_arg_value(arg[1], arg[2], arg[3]) }
   end
 
-  def display_result(method, type, value = nil)
-    return "INV ARG TYPE: #{value.class}, expencted #{type}" if value && invalid_type?(type, value)
+  def retrieve_result(method, type, value)
+    return "#{method}:  true\n" if type == TrueClass
+    return "#{method}:  #{value}" if value
 
-    print("#{method}: ", trueclass?(type) ? 'true' : value.to_s, "\n")
-  end
-
-  def invalid_type?(type, value)
-    type != value&.class
-  end
-
-  def trueclass?(arg)
-    arg == TrueClass
+    "#{method}: Must contain a value"
   end
 end
 
