@@ -18,7 +18,7 @@ class Schema
   def unpack_values(values)
     values.each do |val|
       is_flag = val.start_with?('-')
-      break if !is_flag && !@prev_flag
+      return "Invalid flag: #{val}" if !@prev_flag && (!is_flag || !@valid_schema[val])
 
       curret_valid_value = @valid_schema[val]
       store_finale(is_flag, val, curret_valid_value)

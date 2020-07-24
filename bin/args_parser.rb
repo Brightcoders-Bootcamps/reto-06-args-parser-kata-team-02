@@ -1,20 +1,22 @@
 # frozen_string_literal: true
 
 require_relative 'schema'
+require_relative 'verify_args'
 
 # This class parse arguments to match the schema and print results
 class ArgsParser
   def initialize
     @schema = Schema.new
+    @verify = VerifyArgs.new(self)
   end
 
   def start(arguments)
     elements = @schema.unpack_values(arguments)
-    if elements.empty?
-      puts 'Invalid argument'
+    if elements.empty? || elements.class == String
+      puts elements
       return
     end
-    elements.each { |arg| VerifyArgs.verify_arg_value(arg[1], arg[2], arg[3]) }
+    elements.each { |arg| @verify.verify_arg_value(arg[1], arg[2], arg[3]) }
   end
 
   def retrieve_result(method, type, value)
@@ -25,7 +27,6 @@ class ArgsParser
   end
 end
 
-print 'Ingresa argumentos: '
-statement = gets.split(' ')
+statement = ARGV
 parser = ArgsParser.new
 parser.start(statement)
