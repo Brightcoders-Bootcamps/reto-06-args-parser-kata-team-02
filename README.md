@@ -1,3 +1,10 @@
+## Rubycritic Score
+![Rubycritic score](img/rubycritic_score.png)
+
+## Sandi Meter Score
+![Rubycritic score](img/sandi_meter_score.png)
+
+## ---------------------------------------------------------------------------------------------------------
 ![BrightCoders Logo](img/logo-bc.png)
 
 # Args Kata
