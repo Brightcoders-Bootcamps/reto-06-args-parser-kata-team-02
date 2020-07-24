@@ -9,5 +9,5 @@ gem 'rake'
 gem 'rspec'
 gem 'rubocop'
 gem 'rubycritic'
-gem 'rubycritic-small-badge'
+gem 'rubycritic-small-badge', :require => false
 gem 'sandi_meter'
